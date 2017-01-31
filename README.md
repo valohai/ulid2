@@ -37,6 +37,23 @@ Usage
 * Use `ulid2.encode_ulid_base32(binary)` to convert 16 bytes to 26 ASCII characters
 * Use `ulid2.decode_ulid_base32(ascii)` to convert 26 ASCII characters to 16 bytes
 
+Django compatibility
+--------------------
+
+As `ulid2` is capable of expressing ULIDs as Python UUIDs, it's
+directly compatible with Django's UUIDFields.  For instance, to ULID-ify a model's
+primary key, simply
+
+```python
+from django.db import models
+from ulid2 import generate_ulid_as_uuid
+
+class MyModel(models.Model):
+	id = models.UUIDField(default=generate_ulid_as_uuid, primary_key=True)
+```
+
+and you're done!
+
 
 Why the 2 in the name?
 ----------------------
