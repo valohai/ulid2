@@ -138,7 +138,7 @@ def get_ulid_time(ulid):
     ts_bytes = ulid_to_binary(ulid)[:6]
     ts_bytes = b'\0\0' + ts_bytes
     assert len(ts_bytes) == 8
-    timestamp = struct.unpack('!Q', ts_bytes)[0]
+    timestamp = struct.unpack(b'!Q', ts_bytes)[0]
     return datetime.datetime.utcfromtimestamp(timestamp / 1000.)
 
 
