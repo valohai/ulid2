@@ -53,3 +53,16 @@ def test_conversion_roundtrip():
     uuid = ulid_to_uuid(ulid)
     assert ulid_to_binary(uuid) == ulid_to_binary(ulid)
     assert ulid_to_binary(encoded) == ulid_to_binary(ulid)
+
+
+@pytest.mark.xfail
+def test_issue4():
+    # https://github.com/valohai/ulid2/issues/4
+    cases = [
+        '0' + '0' * 25,
+        '8' + '0' * 25,
+        'G' + '0' * 25,
+        'R' + '0' * 25,
+    ]
+    as_binary = [ulid_to_binary(case) for case in cases]
+    assert len(set(as_binary)) == len(cases)  # Assert unique outputs
