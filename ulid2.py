@@ -144,6 +144,20 @@ def decode_ulid_base32(encoded):
     return _to_binary(binary)
 
 
+def get_ulid_timestamp(ulid):
+    """
+    Get the time from an ULID as an UNIX timestamp.
+
+    :param ulid: An ULID (either as UUID, base32 ULID or binary)
+    :return: UNIX timestamp
+    :rtype: float
+    """
+    ts_bytes = ulid_to_binary(ulid)[:6]
+    ts_bytes = b'\0\0' + ts_bytes
+    assert len(ts_bytes) == 8
+    return (struct.unpack(b'!Q', ts_bytes)[0] / 1000.)
+
+
 def get_ulid_time(ulid):
     """
     Get the time from an ULID as a `datetime.datetime`.
@@ -152,11 +166,8 @@ def get_ulid_time(ulid):
     :return: Datetime
     :rtype: datetime.datetime
     """
-    ts_bytes = ulid_to_binary(ulid)[:6]
-    ts_bytes = b'\0\0' + ts_bytes
-    assert len(ts_bytes) == 8
-    timestamp = struct.unpack(b'!Q', ts_bytes)[0]
-    return datetime.datetime.utcfromtimestamp(timestamp / 1000.)
+    timestamp = get_ulid_timestamp(ulid)
+    return datetime.datetime.utcfromtimestamp(timestamp)
 
 
 def generate_binary_ulid(timestamp=None):

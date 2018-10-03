@@ -1,11 +1,11 @@
 import datetime
 
 import pytest
-
 from ulid2 import (
-    generate_binary_ulid, generate_ulid_as_base32, generate_ulid_as_uuid,
-    get_ulid_time, ulid_to_base32, ulid_to_binary, ulid_to_uuid,
-    InvalidULID, decode_ulid_base32)
+    decode_ulid_base32, generate_binary_ulid, generate_ulid_as_base32,
+    generate_ulid_as_uuid, get_ulid_time, get_ulid_timestamp, InvalidULID,
+    ulid_to_base32, ulid_to_binary, ulid_to_uuid
+)
 
 
 @pytest.mark.parametrize('generator', [
@@ -71,3 +71,6 @@ def test_invalid():
     with pytest.raises(InvalidULID):  # out of range
         ulid_to_binary('R' + '0' * 25)
 
+
+def test_parses_largest_possible_ulid():
+    assert int(get_ulid_timestamp('7ZZZZZZZZZZZZZZZZZZZZZZZZZ') * 1000) == 2 ** 48 - 1
