@@ -4,8 +4,8 @@ import pytest
 
 from ulid2 import (
     generate_binary_ulid, generate_ulid_as_base32, generate_ulid_as_uuid,
-    get_ulid_time, ulid_to_base32, ulid_to_binary, ulid_to_uuid
-)
+    get_ulid_time, ulid_to_base32, ulid_to_binary, ulid_to_uuid,
+    InvalidULID, decode_ulid_base32)
 
 
 @pytest.mark.parametrize('generator', [
@@ -55,14 +55,19 @@ def test_conversion_roundtrip():
     assert ulid_to_binary(encoded) == ulid_to_binary(ulid)
 
 
-@pytest.mark.xfail
-def test_issue4():
-    # https://github.com/valohai/ulid2/issues/4
-    cases = [
-        '0' + '0' * 25,
-        '8' + '0' * 25,
-        'G' + '0' * 25,
-        'R' + '0' * 25,
-    ]
-    as_binary = [ulid_to_binary(case) for case in cases]
-    assert len(set(as_binary)) == len(cases)  # Assert unique outputs
+def test_invalid():
+    with pytest.raises(InvalidULID):  # invalid length (low-level)
+        decode_ulid_base32('What is this')
+    with pytest.raises(InvalidULID):  # invalid length (high-level)
+        ulid_to_binary('What is this')
+    with pytest.raises(InvalidULID):  # invalid characters
+        ulid_to_binary('6' + '~' * 25)
+    with pytest.raises(InvalidULID):  # invalid type
+        ulid_to_binary(8.7)
+    with pytest.raises(InvalidULID):  # out of range
+        ulid_to_binary('8' + '0' * 25)
+    with pytest.raises(InvalidULID):  # out of range
+        ulid_to_binary('G' + '0' * 25)
+    with pytest.raises(InvalidULID):  # out of range
+        ulid_to_binary('R' + '0' * 25)
+

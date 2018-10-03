@@ -24,6 +24,10 @@ py3 = (sys.version_info[0] == 3)
 text_type = (str if py3 else unicode)
 
 
+class InvalidULID(ValueError):
+    pass
+
+
 def _to_binary(byte_list):
     if py3:
         return bytes(byte_list)
@@ -102,9 +106,22 @@ def decode_ulid_base32(encoded):
     :param encoded: 26-character long string
     :return: 16 bytes
     """
-    if not (len(encoded) == 26 and all(c in _symbols for c in encoded)):
-        raise ValueError('invalid base32 ulid')
+    if len(encoded) != 26:
+        raise InvalidULID('base32 ulid is %d characters long, expected 26' % len(encoded))
+
+    if not all(c in _symbols for c in encoded):
+        raise InvalidULID('invalid characters in base32 ulid')
+
     b = [ord(c) for c in encoded]
+
+    if b[0] < 48 or b[0] > 55:
+        # See https://github.com/oklog/ulid/issues/9:
+        #   Technically, a 26-character Base32 encoded string can contain 130 bits of information,
+        #   whereas a ULID must only contain 128 bits.
+        #   Therefore, the largest valid ULID encoded in Base32 is 7ZZZZZZZZZZZZZZZZZZZZZZZZZ,
+        #   which corresponds to an epoch time of 281474976710655 or 2 ^ 48 - 1.
+        raise InvalidULID('base32 ulid is out of range (starts with %s; accepted are 01234567)' % encoded[0])
+
     tab = _decode_table
     binary = [(c & 0xFF) for c in [
         ((tab[b[0]] << 5) | tab[b[1]]),
@@ -226,4 +243,4 @@ def ulid_to_binary(ulid):
         return decode_ulid_base32(ulid)
     if isinstance(ulid, (bytes, bytearray)) and len(ulid) == 16:
         return ulid
-    raise ValueError('can not convert ulid %r to binary' % ulid)
+    raise InvalidULID('can not convert ulid %r to binary' % ulid)
