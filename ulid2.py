@@ -170,6 +170,8 @@ def get_ulid_time(ulid):
     return datetime.datetime.utcfromtimestamp(timestamp)
 
 
+_last_entropy = None
+_last_timestamp = None
 def generate_binary_ulid(timestamp=None):
     """
     Generate the bytes for an ULID.
@@ -180,6 +182,7 @@ def generate_binary_ulid(timestamp=None):
     :return: Bytestring of length 16.
     :rtype: bytes
     """
+    global _last_entropy, _last_timestamp
     if timestamp is None:
         timestamp = time.time()
     elif isinstance(timestamp, datetime.datetime):
@@ -189,7 +192,13 @@ def generate_binary_ulid(timestamp=None):
     ts_bytes = _to_binary(
         (ts >> shift) & 0xFF for shift in (40, 32, 24, 16, 8, 0)
     )
-    return ts_bytes + os.urandom(10)
+    entropy = os.urandom(10)
+    if _last_timestamp == ts and _last_entropy is not None:
+        while entropy < _last_entropy:
+            entropy = os.urandom(10)
+    _last_entropy = entropy
+    _last_timestamp = ts
+    return ts_bytes + entropy
 
 
 def generate_ulid_as_uuid(timestamp=None):

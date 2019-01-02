@@ -20,6 +20,9 @@ def test_ulid_time_monotonic(generator):
         '2013-12-01 10:10:10',
         '2016-07-07 14:12:10',
         '2016-07-07 14:13:10',
+        '2016-07-07 14:13:10',
+        '2016-07-07 14:13:10',
+        '2016-07-07 14:13:10',
     ]:
         dt = datetime.datetime.strptime(time, '%Y-%m-%d %H:%M:%S')
         ulid = generator(dt)
