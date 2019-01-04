@@ -172,7 +172,7 @@ def get_ulid_time(ulid):
 
 _last_entropy = None
 _last_timestamp = None
-def generate_binary_ulid(timestamp=None):
+def generate_binary_ulid(timestamp=None, ensure_monotonic=False):
     """
     Generate the bytes for an ULID.
 
@@ -193,7 +193,7 @@ def generate_binary_ulid(timestamp=None):
         (ts >> shift) & 0xFF for shift in (40, 32, 24, 16, 8, 0)
     )
     entropy = os.urandom(10)
-    if _last_timestamp == ts and _last_entropy is not None:
+    if ensure_monotonic and _last_timestamp == ts and _last_entropy is not None:
         while entropy < _last_entropy:
             entropy = os.urandom(10)
     _last_entropy = entropy
@@ -201,7 +201,7 @@ def generate_binary_ulid(timestamp=None):
     return ts_bytes + entropy
 
 
-def generate_ulid_as_uuid(timestamp=None):
+def generate_ulid_as_uuid(timestamp=None, ensure_monotonic=False):
     """
     Generate an ULID, but expressed as an UUID.
 
@@ -211,10 +211,10 @@ def generate_ulid_as_uuid(timestamp=None):
     :return: UUID containing ULID data.
     :rtype: uuid.UUID
     """
-    return uuid.UUID(bytes=generate_binary_ulid(timestamp))
+    return uuid.UUID(bytes=generate_binary_ulid(timestamp, ensure_monotonic))
 
 
-def generate_ulid_as_base32(timestamp=None):
+def generate_ulid_as_base32(timestamp=None, ensure_monotonic=False):
     """
     Generate an ULID, formatted as a base32 string of length 26.
 
@@ -224,7 +224,7 @@ def generate_ulid_as_base32(timestamp=None):
     :return: ASCII string
     :rtype: str
     """
-    return encode_ulid_base32(generate_binary_ulid(timestamp))
+    return encode_ulid_base32(generate_binary_ulid(timestamp, ensure_monotonic))
 
 
 def ulid_to_base32(ulid):

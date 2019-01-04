@@ -25,7 +25,7 @@ def test_ulid_time_monotonic(generator):
         '2016-07-07 14:13:10',
     ]:
         dt = datetime.datetime.strptime(time, '%Y-%m-%d %H:%M:%S')
-        ulid = generator(dt)
+        ulid = generator(dt, ensure_monotonic=True)
         if last:
             assert ulid > last
         last = ulid
