@@ -25,14 +25,16 @@ def test_ulid_time_monotonic(generator):
         '2016-07-07 14:13:10',
     ]:
         dt = datetime.datetime.strptime(time, '%Y-%m-%d %H:%M:%S')
-        ulid = generator(dt, ensure_monotonic=True)
+        ulid = generator(dt, monotonic=True)
         if last:
             assert ulid > last
         last = ulid
 
+
 def test_ulid_not_monotonic_if_flag_false():
-    some_unordered_epoch_ulids = [generate_ulid_as_base32(timestamp = 0, ensure_monotonic=False) for _ in range(100)]
+    some_unordered_epoch_ulids = [generate_ulid_as_base32(timestamp=0, monotonic=False) for _ in range(100)]
     assert sorted(some_unordered_epoch_ulids) != some_unordered_epoch_ulids
+
 
 def test_ulid_sanity():
     # https://github.com/RobThree/NUlid/blob/master/NUlid.Tests/UlidTests.cs#L14

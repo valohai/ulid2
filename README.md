@@ -22,9 +22,10 @@ Usage
 * Use `ulid2.generate_ulid_as_uuid()` to generate an ULID as an `uuid.UUID`
 * Use `ulid2.generate_ulid_as_base32()` to generate an ULID as ASCII
 
-These functions accept an optional keyword argument `timestamp` and an optional keyword argument `ensure_monotonic`.
+These functions accept optional arguments:
 
-Note that these functions are not threadsafe and may not demonstrate monotonic behavior with `ensure_motonic=True` when called from multiple threads.
+* `timestamp`: a `datetime.datetime` or integer UNIX timestamp to base the ULID on.
+* `monotonic`: boolean; whether to attempt to ensure ULIDs are monotonically increasing.  Monotonic behavior is not guaranteed when used from multiple threads.
 
 ### Parsing ULIDs
 
