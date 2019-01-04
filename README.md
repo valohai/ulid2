@@ -22,6 +22,11 @@ Usage
 * Use `ulid2.generate_ulid_as_uuid()` to generate an ULID as an `uuid.UUID`
 * Use `ulid2.generate_ulid_as_base32()` to generate an ULID as ASCII
 
+These functions accept optional arguments:
+
+* `timestamp`: a `datetime.datetime` or integer UNIX timestamp to base the ULID on.
+* `monotonic`: boolean; whether to attempt to ensure ULIDs are monotonically increasing.  Monotonic behavior is not guaranteed when used from multiple threads.
+
 ### Parsing ULIDs
 
 * Use `ulid2.get_ulid_time(ulid)` to get the time from an ULID (in any format)
@@ -49,7 +54,7 @@ from django.db import models
 from ulid2 import generate_ulid_as_uuid
 
 class MyModel(models.Model):
-	id = models.UUIDField(default=generate_ulid_as_uuid, primary_key=True)
+    id = models.UUIDField(default=generate_ulid_as_uuid, primary_key=True)
 ```
 
 and you're done!

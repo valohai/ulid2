@@ -20,12 +20,20 @@ def test_ulid_time_monotonic(generator):
         '2013-12-01 10:10:10',
         '2016-07-07 14:12:10',
         '2016-07-07 14:13:10',
+        '2016-07-07 14:13:10',
+        '2016-07-07 14:13:10',
+        '2016-07-07 14:13:10',
     ]:
         dt = datetime.datetime.strptime(time, '%Y-%m-%d %H:%M:%S')
-        ulid = generator(dt)
+        ulid = generator(dt, monotonic=True)
         if last:
             assert ulid > last
         last = ulid
+
+
+def test_ulid_not_monotonic_if_flag_false():
+    some_unordered_epoch_ulids = [generate_ulid_as_base32(timestamp=0, monotonic=False) for _ in range(100)]
+    assert sorted(some_unordered_epoch_ulids) != some_unordered_epoch_ulids
 
 
 def test_ulid_sanity():
