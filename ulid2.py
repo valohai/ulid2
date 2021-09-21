@@ -29,11 +29,11 @@ class InvalidULID(ValueError):
 
 
 def _to_binary(byte_list):
-    if py3:
-        return bytes(byte_list)
-    else:
-        return bytes(b''.join(chr(b) for b in byte_list))
+    return bytes(b''.join(chr(b) for b in byte_list))
 
+
+if py3:
+    _to_binary = bytes
 
 # Unrolled and optimized ULID Base32 encoding/decoding
 # implementations based on NUlid:
