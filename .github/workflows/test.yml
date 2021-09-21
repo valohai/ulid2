@@ -25,4 +25,4 @@ jobs:
           python-version: '${{ matrix.python-version }}'
       - run: pip install pytest pytest-cov
       - run: py.test -vvv --cov .
-      - uses: codecov/codecov-action@v1
+      - uses: codecov/codecov-action@v2
