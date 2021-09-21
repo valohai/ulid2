@@ -173,6 +173,7 @@ def get_ulid_time(ulid):
 _last_entropy = None
 _last_timestamp = None
 
+
 def generate_binary_ulid(timestamp=None, monotonic=False):
     """
     Generate the bytes for an ULID.
@@ -193,9 +194,7 @@ def generate_binary_ulid(timestamp=None, monotonic=False):
         timestamp = calendar.timegm(timestamp.utctimetuple())
 
     ts = int(timestamp * 1000.0)
-    ts_bytes = _to_binary(
-        (ts >> shift) & 0xFF for shift in (40, 32, 24, 16, 8, 0)
-    )
+    ts_bytes = struct.pack('!Q', ts)[2:]
     entropy = os.urandom(10)
     if monotonic and _last_timestamp == ts and _last_entropy is not None:
         while entropy < _last_entropy:
