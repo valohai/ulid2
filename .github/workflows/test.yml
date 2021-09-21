@@ -8,15 +8,11 @@ on:
       - master
 jobs:
   Build:
-    runs-on: '${{ matrix.os }}'
+    runs-on: ubuntu-20.04
     strategy:
       matrix:
-        os:
-          - ubuntu-18.04
-        exclude: []
         python-version:
           - '2.7'
-          - '3.5'
           - '3.6'
           - '3.7'
           - '3.8'
