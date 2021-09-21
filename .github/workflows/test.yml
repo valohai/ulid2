@@ -25,4 +25,5 @@ jobs:
           python-version: '${{ matrix.python-version }}'
       - run: pip install pytest pytest-cov
       - run: py.test -vvv --cov .
+      - run: python perftest_ulid2.py
       - uses: codecov/codecov-action@v2
