@@ -1,3 +1,4 @@
 [run]
 omit =
     setup.py
+    perftest_ulid2.py
