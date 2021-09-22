@@ -4,7 +4,7 @@ from setuptools import setup
 
 setup(
     name='ulid2',
-    version='0.2.0',
+    version='0.3.0',
     description='ULID encoding/decoding for Python',
     author='Aarni Koskela',
     author_email='akx@iki.fi',
