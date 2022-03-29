@@ -12,6 +12,7 @@ __all__ = [
     'encode_ulid_base32',
     'decode_ulid_base32',
     'get_ulid_time',
+    'get_ulid_timestamp',
     'generate_binary_ulid',
     'generate_ulid_as_uuid',
     'generate_ulid_as_base32',
