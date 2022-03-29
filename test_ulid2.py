@@ -79,7 +79,7 @@ def test_invalid():
     with pytest.raises(InvalidULID):  # invalid characters
         ulid_to_binary('6' + '~' * 25)
     with pytest.raises(InvalidULID):  # invalid type
-        ulid_to_binary(8.7)
+        ulid_to_binary(8.7)  # type: ignore[arg-type]
     with pytest.raises(InvalidULID):  # out of range
         ulid_to_binary('8' + '0' * 25)
     with pytest.raises(InvalidULID):  # out of range

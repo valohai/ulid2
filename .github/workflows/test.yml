@@ -37,3 +37,4 @@ jobs:
       - run: pip install flake8 isort mypy
       - run: flake8 ulid2
       - run: isort --check ulid2
+      - run: mypy --strict ulid2

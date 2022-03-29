@@ -11,4 +11,5 @@ setup(
     url='https://github.com/valohai/ulid2',
     packages=['ulid2'],
     license='MIT',
+    include_package_data=True,
 )
