@@ -9,6 +9,6 @@ setup(
     author='Aarni Koskela',
     author_email='akx@iki.fi',
     url='https://github.com/valohai/ulid2',
-    py_modules=['ulid2'],
+    packages=['ulid2'],
     license='MIT',
 )
