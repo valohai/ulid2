@@ -2,7 +2,7 @@ ulid2
 =====
 
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Build Status](https://travis-ci.org/valohai/ulid2.svg?branch=master)](https://travis-ci.org/valohai/ulid2)
+[![Test](https://github.com/valohai/ulid2/actions/workflows/test.yml/badge.svg)](https://github.com/valohai/ulid2/actions/workflows/test.yml)
 [![codecov](https://codecov.io/gh/valohai/ulid2/branch/master/graph/badge.svg)](https://codecov.io/gh/valohai/ulid2)
 
 [ULID (Universally Unique Lexicographically Sortable Identifier)][ulid] encoding and

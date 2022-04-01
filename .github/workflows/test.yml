@@ -27,3 +27,14 @@ jobs:
       - run: py.test -vvv --cov .
       - run: python perftest_ulid2.py
       - uses: codecov/codecov-action@v2
+  Lint:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.10'
+      - run: pip install flake8 isort mypy
+      - run: flake8 ulid2
+      - run: isort --check ulid2
+      - run: mypy --strict ulid2

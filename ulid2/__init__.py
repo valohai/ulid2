@@ -12,6 +12,7 @@ __all__ = [
     'encode_ulid_base32',
     'decode_ulid_base32',
     'get_ulid_time',
+    'get_ulid_timestamp',
     'generate_binary_ulid',
     'generate_ulid_as_uuid',
     'generate_ulid_as_base32',
@@ -21,19 +22,19 @@ __all__ = [
 ]
 
 py3 = (sys.version_info[0] == 3)
-text_type = (str if py3 else unicode)
+text_type = (str if py3 else unicode)  # noqa: F821
 
 
 class InvalidULID(ValueError):
     pass
 
 
-def _to_binary(byte_list):
-    return bytes(b''.join(chr(b) for b in byte_list))
-
-
 if py3:
     _to_binary = bytes
+else:
+    def _to_binary(byte_list):
+        return bytes(b''.join(chr(b) for b in byte_list))
+
 
 # Unrolled and optimized ULID Base32 encoding/decoding
 # implementations based on NUlid:

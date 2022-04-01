@@ -1,0 +1,2 @@
+include ulid2/py.typed
+include ulid2/__init__.pyi

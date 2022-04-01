@@ -1,10 +1,18 @@
 import datetime
 
 import pytest
+
 from ulid2 import (
-    decode_ulid_base32, generate_binary_ulid, generate_ulid_as_base32,
-    generate_ulid_as_uuid, get_ulid_time, get_ulid_timestamp, InvalidULID,
-    ulid_to_base32, ulid_to_binary, ulid_to_uuid
+    InvalidULID,
+    decode_ulid_base32,
+    generate_binary_ulid,
+    generate_ulid_as_base32,
+    generate_ulid_as_uuid,
+    get_ulid_time,
+    get_ulid_timestamp,
+    ulid_to_base32,
+    ulid_to_binary,
+    ulid_to_uuid,
 )
 
 
@@ -71,7 +79,7 @@ def test_invalid():
     with pytest.raises(InvalidULID):  # invalid characters
         ulid_to_binary('6' + '~' * 25)
     with pytest.raises(InvalidULID):  # invalid type
-        ulid_to_binary(8.7)
+        ulid_to_binary(8.7)  # type: ignore[arg-type]
     with pytest.raises(InvalidULID):  # out of range
         ulid_to_binary('8' + '0' * 25)
     with pytest.raises(InvalidULID):  # out of range
