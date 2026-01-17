@@ -198,8 +198,17 @@ def generate_binary_ulid(timestamp=None, monotonic=False):
     ts_bytes = struct.pack(b'!Q', ts)[2:]
     entropy = os.urandom(10)
     if monotonic and _last_timestamp == ts and _last_entropy is not None:
-        while entropy < _last_entropy:
-            entropy = os.urandom(10)
+        # Increment last entropy by 1 to ensure monotonicity (O(1) vs rejection sampling)
+        if py3:
+            entropy_int = int.from_bytes(_last_entropy, 'big') + 1
+        else:
+            entropy_int = sum(ord(b) << (8 * (9 - i)) for i, b in enumerate(_last_entropy)) + 1
+        if entropy_int >= (1 << 80):
+            raise OverflowError("ULID entropy overflow for timestamp")
+        if py3:
+            entropy = entropy_int.to_bytes(10, 'big')
+        else:
+            entropy = _to_binary([(entropy_int >> (8 * (9 - i))) & 0xFF for i in range(10)])
     _last_entropy = entropy
     _last_timestamp = ts
     return ts_bytes + entropy
