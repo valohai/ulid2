@@ -8,33 +8,52 @@ on:
       - master
 jobs:
   Build:
-    runs-on: ubuntu-20.04
+    runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
-        python-version:
-          - '2.7'
-          - '3.6'
-          - '3.7'
-          - '3.8'
-          - '3.9'
+        include:
+          - { os: ubuntu-22.04, python-version: "3.7" }
+          - { os: ubuntu-22.04, python-version: "3.8" }
+          - { os: ubuntu-22.04, python-version: "3.9" }
+          - { os: ubuntu-24.04, python-version: "3.10" }
+          - { os: ubuntu-24.04, python-version: "3.11" }
+          - { os: ubuntu-24.04, python-version: "3.12" }
+          - { os: ubuntu-24.04, python-version: "3.13" }
+          - { os: ubuntu-24.04, python-version: "3.14" }
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: 'Set up Python ${{ matrix.python-version }}'
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: '${{ matrix.python-version }}'
       - run: pip install pytest pytest-cov
       - run: py.test -vvv --cov .
       - run: python perftest_ulid2.py
-      - uses: codecov/codecov-action@v2
+      - uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7.0.0
   Lint:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
-        with:
-          python-version: '3.10'
-      - run: pip install flake8 isort mypy
-      - run: flake8 ulid2
-      - run: isort --check ulid2
-      - run: mypy --strict ulid2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+      - run: uvx flake8 ulid2
+      - run: uvx isort --check ulid2
+      - run: uvx mypy --strict ulid2
+  Build-Python27:
+    runs-on: ubuntu-latest
+    container:
+      image: python:2.7.17-slim-buster
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - run: pip install pytest pytest-cov
+      - run: py.test -vvv --cov .
+      - run: python perftest_ulid2.py
+  Build-Python36:
+    runs-on: ubuntu-latest
+    container:
+      image: python:3.6.15-slim-buster
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - run: pip install pytest pytest-cov
+      - run: py.test -vvv --cov .
+      - run: python perftest_ulid2.py
