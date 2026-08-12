@@ -90,3 +90,30 @@ def test_invalid():
 
 def test_parses_largest_possible_ulid():
     assert int(get_ulid_timestamp('7ZZZZZZZZZZZZZZZZZZZZZZZZZ') * 1000) == 2 ** 48 - 1
+
+
+def test_monotonic_high_entropy_performance():
+    """Regression test: monotonic mode should not hang with high entropy values."""
+    import ulid2
+
+    # Set up worst-case scenario: last entropy near maximum
+    ulid2._last_entropy = b'\xff\xff\xff\xff\xff\xff\xff\xff\xff\xfe'
+    ulid2._last_timestamp = 1000
+
+    # This should complete instantly, not hang
+    result = generate_binary_ulid(timestamp=1.0, monotonic=True)  # ts=1000 ms
+
+    # Verify it's still monotonic (new entropy > old entropy)
+    assert result[6:] == b'\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff'
+
+
+def test_monotonic_entropy_overflow():
+    """Test that entropy overflow raises an error."""
+    import ulid2
+
+    # Set entropy to maximum value
+    ulid2._last_entropy = b'\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff'
+    ulid2._last_timestamp = 1000
+
+    with pytest.raises(OverflowError):
+        generate_binary_ulid(timestamp=1.0, monotonic=True)
